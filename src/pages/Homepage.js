@@ -6,15 +6,19 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 const Homepage = () => {
   const [isLoading, setIsLoading] = useState(true); // for showing the loading status
-  const [currentTemprature, setCurrentTemprature] = useState(''); // for string current weather temp
+  const [currentTemprature, setCurrentTemprature] = useState(""); // for string current weather temp
+  const [currentCity, setCurrentCity] = useState(""); // for storing current city
 
   // function for calling weather api for getting the weather data
   const weatherDetails = () => {
     fetch("http://ipinspector.herokuapp.com/")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setIsLoading(false)
+        console.log(data.weather_forecast, "data");
+        console.log(data.weather_forecast[0], "particular");
+        setCurrentTemprature(data.weather_forecast[0].current.temperature);
+        setCurrentCity(data.weather_forecast[0].location.name);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -42,23 +46,36 @@ const Homepage = () => {
           justify-content: center;
           justify-items: center;
           border: 1px gray solid;
-          border-radius: 5px;
+          border-radius: 20px;
           box-sizing: border-box;
+          margin: 10px;
           box-shadow: 10px 10px 100px 10px rgba(205, 205, 205, 0.5);
         `}
       >
         {isLoading ? (
-          <div css={css`
-          text-align: center;
-          `}>
+          <div
+            css={css`
+              text-align: center;
+            `}
+          >
             <CircularProgress />
-            <br/>
-            <span>
-              Loading ....
-            </span>
+            <br />
+            <span>Loading ....</span>
           </div>
         ) : (
-          <div></div>
+          <div
+          css={css`
+          text-align: center;
+          `}
+          >
+            <span
+            css={css`
+            font-size: 4rem;
+            `}
+            >{currentTemprature}</span>
+            <br/>
+            <span>{currentCity}</span>
+          </div>
         )}
       </Box>
     </div>
